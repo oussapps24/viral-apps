@@ -11,7 +11,7 @@ export default function TermsPage() {
     <LegalPage title="Terms of Service">
       <Section n={1} title="About these terms">
         <p>
-          {site} is run by {companyName()}, a limited liability company registered in {stateName()} (&quot;we&quot;, &quot;us&quot;).
+          {site} is run by {companyName()}, a limited liability company registered in the State of {stateName()}, {legal.country} (&quot;we&quot;, &quot;us&quot;).
           These terms apply whenever you use the site or buy a card. By using {site}, you agree to them. If you don&apos;t agree, please don&apos;t use the site.
         </p>
         <p>You need to be 18 or older to buy a card, or have a parent or guardian&apos;s permission.</p>
@@ -113,7 +113,7 @@ export default function TermsPage() {
 
       <Section n={12} title="Governing law">
         <p>
-          The laws of {stateName()}, USA, govern these terms. Any dispute goes to the state or federal courts located there, unless the law where you
+          The laws of the State of {stateName()}, {legal.country}, govern these terms. Any dispute goes to the state or federal courts located there, unless the law where you
           live gives you the right to bring it locally.
         </p>
       </Section>

@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <LegalPage title="Privacy Policy">
       <Section n={1} title="Who we are">
         <p>
-          {site} is run by {companyName()} (&quot;we&quot;, &quot;us&quot;). This policy explains what we collect when you use the site, why, and what
+          {site} is run by {companyName()}, a {legal.state}, {legal.country} limited liability company (&quot;we&quot;, &quot;us&quot;). This policy explains what we collect when you use the site, why, and what
           you can ask us to do with it. We keep it short because we collect very little.
         </p>
       </Section>

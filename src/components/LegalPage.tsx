@@ -1,15 +1,10 @@
 import type { ReactNode } from "react";
 import { env } from "@/lib/env";
-import { legal, legalReady } from "@/lib/legal";
+import { legal } from "@/lib/legal";
 
 export function LegalPage({ title, children }: { title: string; children: ReactNode }) {
   return (
     <main className="mx-auto max-w-2xl px-4 py-14">
-      {!legalReady() && (
-        <p className="mb-6 rounded-2xl bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800 ring-1 ring-amber-200">
-          Not ready for launch: set the company name and state in src/lib/legal.ts and SUPPORT_EMAIL in the environment.
-        </p>
-      )}
       <h1 className="font-display text-4xl font-black">{title}</h1>
       <p className="mt-2 text-sm text-plum-soft">Last updated {legal.updated}</p>
       <div className="mt-10 space-y-10">{children}</div>
