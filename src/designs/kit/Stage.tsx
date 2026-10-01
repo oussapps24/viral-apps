@@ -102,6 +102,7 @@ export function Stage({
   return (
     <MusicContext.Provider value={ctl}>
       <div
+        data-stage
         onPointerDown={firstTap}
         className={`relative flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden px-5 pb-28 pt-16 ${className}`}
         style={patternStyle}
