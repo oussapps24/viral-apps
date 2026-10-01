@@ -71,7 +71,8 @@ export async function GET(_req: Request, ctx: RouteContext<"/p/[cardId]/checkout
           price_data: {
             currency: "usd",
             unit_amount: template.priceCents,
-            product_data: { name: `${template.name} card` },
+            // Managed Payments requires a product tax code. Digital Greeting Cards - Audio Visual.
+            product_data: { name: `${template.name} card`, tax_code: "txcd_10506001" },
           },
         },
       ],
