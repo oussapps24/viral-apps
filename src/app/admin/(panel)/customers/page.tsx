@@ -1,10 +1,10 @@
 import { desc, ilike, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badge, money, PageHeader, when } from "@/components/admin/ui";
+import { money, PageHeader, when } from "@/components/admin/ui";
 import { db, schema } from "@/db";
 import { requireAdmin } from "@/lib/auth";
-import { setFreeAccess } from "./actions";
+import { FreeAccessToggle } from "./FreeAccessToggle";
 import { ResetLinkButton } from "./ResetLinkButton";
 
 export const metadata: Metadata = { title: "Customers" };
@@ -59,13 +59,10 @@ export default async function CustomersPage({ searchParams }: PageProps<"/admin/
                 <td className="px-3 py-3 text-right tabular-nums">{paidCards}</td>
                 <td className="px-3 py-3 text-right font-extrabold tabular-nums">{money(spentCents)}</td>
                 <td className="whitespace-nowrap px-3 py-3">
-                  <form action={setFreeAccess} className="flex items-center gap-2">
-                    <input type="hidden" name="customerId" value={c.id} />
-                    <input type="hidden" name="enable" value={c.freeAccess ? "0" : "1"} />
-                    {c.freeAccess && <Badge status="live">Free</Badge>}
-                    <button className="text-xs font-extrabold text-plum-soft hover:text-rose">{c.freeAccess ? "Turn off" : "Turn on"}</button>
+                  <div className="flex items-center gap-2.5">
+                    <FreeAccessToggle customerId={c.id} enabled={c.freeAccess} />
                     {freeCards > 0 && <span className="text-xs text-plum-soft">{freeCards} free</span>}
-                  </form>
+                  </div>
                 </td>
                 <td className="px-5 py-3 text-right text-xs font-extrabold">
                   <div className="flex items-start justify-end gap-4">
