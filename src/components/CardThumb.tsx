@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { CoverArt } from "@/components/CoverArt";
-import { formatPrice } from "@/designs/registry";
 import type { TemplateView } from "@/lib/templates";
 
-/** Gallery tile with name, tagline and price. */
+/** Gallery tile with name and tagline. Price is only shown at the unlock step. */
 export function CardThumb({ t, href }: { t: TemplateView; href?: string }) {
   const { cover } = t;
   return (
@@ -14,10 +13,7 @@ export function CardThumb({ t, href }: { t: TemplateView; href?: string }) {
         <CoverArt t={t} />
       </div>
       <div className="mt-3 px-1">
-        <div className="flex items-baseline justify-between gap-2">
-          <p className="font-extrabold group-hover:text-rose">{t.name}</p>
-          <p className="shrink-0 text-sm font-extrabold tabular-nums text-rose">{formatPrice(t.priceCents)}</p>
-        </div>
+        <p className="font-extrabold group-hover:text-rose">{t.name}</p>
         <p className="text-sm text-plum-soft">{t.tagline}</p>
       </div>
     </Link>

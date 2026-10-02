@@ -2,6 +2,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireAdmin } from "@/lib/auth";
@@ -42,4 +43,16 @@ export async function createResetLink(_prev: ResetLinkState, form: FormData): Pr
   // is set as a cookie on our domain and the customer lands on the new-password page.
   const q = new URLSearchParams({ token_hash: data.properties.hashed_token, type: "recovery", next: "/account/new-password" });
   return { link: `${env.siteUrl()}/auth/callback?${q}` };
+}
+
+/** Switches free card creation on or off for one customer. Admin only. */
+export async function setFreeAccess(form: FormData) {
+  await requireAdmin();
+  const id = z.string().uuid().safeParse(form.get("customerId"));
+  if (!id.success) return;
+  await db()
+    .update(schema.customers)
+    .set({ freeAccess: form.get("enable") === "1" })
+    .where(eq(schema.customers.id, id.data));
+  revalidatePath("/admin/customers");
 }

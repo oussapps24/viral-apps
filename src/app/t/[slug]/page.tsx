@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CardRenderer from "@/designs/CardRenderer";
 import { getAdmin } from "@/lib/auth";
-import { formatPrice } from "@/designs/registry";
 import { getTemplateBySlug } from "@/lib/templates";
 
 export async function generateMetadata({ params }: PageProps<"/t/[slug]">): Promise<Metadata> {
@@ -32,7 +31,7 @@ export default async function TemplateDemoPage({ params, searchParams }: PagePro
       </Link>
       <div className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center">
         <Link href={`/editor/${slug}`} className="btn btn-primary pointer-events-auto px-7 py-3.5 shadow-xl">
-          ✏️ Customize this card · {formatPrice(t.priceCents)}
+          ✏️ Customize this card
         </Link>
       </div>
     </div>

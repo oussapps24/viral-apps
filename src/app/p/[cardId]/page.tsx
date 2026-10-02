@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import CardRenderer from "@/designs/CardRenderer";
 import { formatPrice } from "@/designs/registry";
-import { cardPhotos, getCardById } from "@/lib/cards";
+import { cardPhotos, getCardById, hasFreeAccess } from "@/lib/cards";
 import { getTemplateById } from "@/lib/templates";
+import { getCurrentUser } from "@/lib/user";
 
 export const metadata = { title: "Your preview", robots: { index: false } };
 
@@ -19,6 +20,8 @@ export default async function DraftPreviewPage({ params, searchParams }: PagePro
   if (!template) notFound();
   const photos = await cardPhotos(card);
   const checkout = `/p/${card.id}/checkout`;
+  const user = await getCurrentUser();
+  const free = user ? await hasFreeAccess(user.id) : false;
 
   return (
     <div className="relative pb-40 sm:pb-16">
@@ -42,7 +45,7 @@ export default async function DraftPreviewPage({ params, searchParams }: PagePro
           <div className="text-center sm:text-left">
             <p className="font-extrabold text-plum">Love it? Unlock your share link.</p>
             <p className="text-xs text-plum-soft">
-              One-time {formatPrice(template.priceCents)} · secure checkout by Stripe · saved in My cards
+              {free ? "Free for your account" : `One-time ${formatPrice(template.priceCents)} · secure checkout by Stripe`} · saved in My cards
               {error === "owner" && <span className="ml-1 font-bold text-red-600">· This card belongs to another account</span>}
               {error === "checkout" && <span className="ml-1 font-bold text-red-600">· Checkout couldn&apos;t start. Please try again.</span>}
             </p>
@@ -51,7 +54,7 @@ export default async function DraftPreviewPage({ params, searchParams }: PagePro
             {/* Plain <a>: a full navigation to the checkout route (never prefetched). */}
             {/* Buyers signed in before customizing; the checkout route still guards older unowned drafts. */}
             <a href={checkout} className="btn btn-primary w-full whitespace-nowrap px-8">
-              Unlock for {formatPrice(template.priceCents)}
+              {free ? "Unlock for free" : `Unlock for ${formatPrice(template.priceCents)}`}
             </a>
           </div>
         </div>

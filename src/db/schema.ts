@@ -38,6 +38,8 @@ export const admins = pgTable("admins", {
 export const customers = pgTable("customers", {
   id: uuid("id").primaryKey(),
   email: text("email").notNull(),
+  /** Admin-granted: this account unlocks cards without paying (see unlockFree in src/lib/cards.ts). */
+  freeAccess: boolean("free_access").notNull().default(false),
   createdAt: createdAt(),
   lastSignInAt: timestamp("last_sign_in_at", { withTimezone: true }),
 });
@@ -140,6 +142,8 @@ export const orders = pgTable(
     stripePaymentIntentId: text("stripe_payment_intent_id"),
     amountCents: integer("amount_cents").notNull(),
     currency: text("currency").notNull().default("usd"),
+    /** True for cards unlocked by a free-access account. No Stripe payment behind it. */
+    isFree: boolean("is_free").notNull().default(false),
     status: orderStatus("status").notNull().default("pending"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -148,6 +152,7 @@ export const orders = pgTable(
     index("orders_card_id_idx").on(t.cardId),
     index("orders_payment_intent_idx").on(t.stripePaymentIntentId),
     index("orders_status_created_idx").on(t.status, t.createdAt),
+    index("orders_free_idx").on(t.isFree),
   ],
 );
 

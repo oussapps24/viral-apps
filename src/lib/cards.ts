@@ -1,11 +1,12 @@
 import "server-only";
+import { randomUUID } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import type Stripe from "stripe";
 import { db, schema } from "@/db";
 import { env } from "./env";
 import { signedPhotoUrls } from "./storage";
 
-const { cards, orders } = schema;
+const { cards, orders, customers } = schema;
 
 export async function getCardById(id: string) {
   // Reject non-uuids early so Postgres doesn't throw on a bad cast.
@@ -70,6 +71,36 @@ export async function fulfillStripeSession(session: Stripe.Checkout.Session) {
   });
 
   return true;
+}
+
+/** Whether an admin has switched on free access for this account. Always read from the database. */
+export async function hasFreeAccess(userId: string) {
+  const [row] = await db().select({ free: customers.freeAccess }).from(customers).where(eq(customers.id, userId)).limit(1);
+  return row?.free === true;
+}
+
+/**
+ * Unlocks a draft for a free-access account: no Stripe, a zero-amount order marked
+ * `isFree` so it shows up in the admin Orders list but never in revenue.
+ * Idempotent: an already unlocked card is left alone.
+ */
+export async function unlockFree(cardId: string, buyerEmail: string) {
+  await db().transaction(async (tx) => {
+    const unlocked = await tx
+      .update(cards)
+      .set({ status: "paid", paidAt: sql`coalesce(${cards.paidAt}, now())`, buyerEmail })
+      .where(and(eq(cards.id, cardId), eq(cards.status, "draft")))
+      .returning({ id: cards.id });
+    if (unlocked.length === 0) return;
+    await tx.insert(orders).values({
+      cardId,
+      // The column is unique and NOT NULL; free orders get a synthetic id that can't clash with Stripe's cs_ ids.
+      stripeSessionId: `free_${randomUUID()}`,
+      amountCents: 0,
+      isFree: true,
+      status: "paid",
+    });
+  });
 }
 
 /** Checkout expired or async payment failed. */

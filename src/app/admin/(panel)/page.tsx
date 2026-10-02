@@ -5,6 +5,7 @@ import { db, schema } from "@/db";
 import { requireAdmin } from "@/lib/auth";
 
 const { orders, cards, templates } = schema;
+const paidOnly = and(eq(orders.status, "paid"), eq(orders.isFree, false));
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /** Server-side data load (kept out of the component body so render stays pure). */
@@ -17,7 +18,7 @@ async function loadStats() {
     db()
       .select({ n: sql<number>`count(*)::int`, cents: sql<number>`coalesce(sum(${orders.amountCents}), 0)::int` })
       .from(orders)
-      .where(since ? and(eq(orders.status, "paid"), gte(orders.updatedAt, since)) : eq(orders.status, "paid"));
+      .where(since ? and(paidOnly, gte(orders.updatedAt, since)) : paidOnly);
 
   const [[all], [last30], [todays], [drafts], recent, top] = await Promise.all([
     sumPaid(),
@@ -29,7 +30,7 @@ async function loadStats() {
       .from(orders)
       .innerJoin(cards, eq(orders.cardId, cards.id))
       .innerJoin(templates, eq(cards.templateId, templates.id))
-      .where(eq(orders.status, "paid"))
+      .where(paidOnly)
       .orderBy(desc(orders.updatedAt))
       .limit(8),
     db()
@@ -37,7 +38,7 @@ async function loadStats() {
       .from(orders)
       .innerJoin(cards, eq(orders.cardId, cards.id))
       .innerJoin(templates, eq(cards.templateId, templates.id))
-      .where(eq(orders.status, "paid"))
+      .where(paidOnly)
       .groupBy(templates.name)
       .orderBy(desc(sql`count(*)`))
       .limit(5),

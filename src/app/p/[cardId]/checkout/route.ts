@@ -1,7 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { db, schema } from "@/db";
-import { getCardById } from "@/lib/cards";
+import { getCardById, hasFreeAccess, unlockFree } from "@/lib/cards";
 import { env } from "@/lib/env";
 import { stripe } from "@/lib/stripe";
 import { getTemplateById } from "@/lib/templates";
@@ -43,6 +43,13 @@ export async function GET(_req: Request, ctx: RouteContext<"/p/[cardId]/checkout
 
   const template = await getTemplateById(card.templateId);
   if (!template) redirect("/cards");
+
+  // Accounts an admin marked as free skip Stripe entirely. Checked here on the
+  // server against the database, never from anything the browser sends.
+  if (await hasFreeAccess(user.id)) {
+    await unlockFree(card.id, user.email);
+    redirect(`/done/${card.id}`);
+  }
 
   // Reuse an open checkout for this card (double clicks, back button, a second
   // tab) instead of creating another Stripe session and another pending order.
