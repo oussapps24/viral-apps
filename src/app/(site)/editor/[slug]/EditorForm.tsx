@@ -125,7 +125,7 @@ function PhotoField({ f, fallback }: { f: FieldDef; fallback?: string }) {
         {preview || fallback ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview ?? fallback} alt="" className="absolute inset-0 h-full w-full bg-white object-cover" />
+            <img src={preview ?? fallback} alt="" className="absolute inset-0 h-full w-full object-cover" />
             {!preview && (
               <span className="absolute inset-x-2 bottom-2 rounded-full bg-white/90 px-2 py-1 text-[10px] font-extrabold text-plum shadow-sm">
                 default · tap to change

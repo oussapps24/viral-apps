@@ -121,7 +121,7 @@ function Face({ photo, emoji }: { photo?: string; emoji: string }) {
   if (photo) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={photo} alt="" className="h-52 w-52 rounded-3xl bg-white/70 object-cover shadow-lg sm:h-60 sm:w-60" />
+      <img src={photo} alt="" className="h-52 w-52 rounded-3xl object-cover drop-shadow-lg sm:h-60 sm:w-60" />
     );
   }
   return (

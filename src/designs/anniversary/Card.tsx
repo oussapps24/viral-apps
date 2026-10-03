@@ -53,7 +53,7 @@ export default function Anniversary(card: CardProps) {
             <Confetti colors={["#be123c", "#fb7185", "#fecdd3", "#fde68a"]} />
             {photos.photo && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-64 w-52 rounded-t-full object-cover shadow-xl" />
+              <img src={photos.photo} alt="" className="h-64 w-52 rounded-t-full object-cover drop-shadow-xl" />
             )}
             <p className="whitespace-pre-line font-display text-xl">{data.message}</p>
             <Gifts card={card} theme={theme} />

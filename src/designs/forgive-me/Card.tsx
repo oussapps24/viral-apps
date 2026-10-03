@@ -26,7 +26,7 @@ export default function ForgiveMe(card: CardProps) {
           <motion.div key="ask" exit={{ opacity: 0 }} className="flex max-w-sm flex-col items-center gap-6 rounded-3xl bg-white/60 px-6 py-8 text-center shadow-xl backdrop-blur">
             {photos.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-44 w-44 rounded-2xl bg-white/70 object-cover" />
+              <img src={photos.photo} alt="" className="h-44 w-44 rounded-2xl object-cover" />
             ) : (
               <motion.span animate={{ rotate: [-4, 4, -4] }} transition={{ repeat: Infinity, duration: 1.6 }} className="text-8xl">
                 🥹
@@ -64,7 +64,7 @@ export default function ForgiveMe(card: CardProps) {
             <h1 className="text-3xl font-bold">I knew you would forgive me! 💗</h1>
             {photos.happyPhoto && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.happyPhoto} alt="" className="h-48 w-48 rounded-2xl bg-white/70 object-cover shadow-lg" />
+              <img src={photos.happyPhoto} alt="" className="h-48 w-48 rounded-2xl object-cover drop-shadow-lg" />
             )}
             <p className="whitespace-pre-line rounded-3xl bg-white/70 p-6 text-left leading-relaxed shadow backdrop-blur">{data.message}</p>
             <Gifts card={card} theme={theme} />

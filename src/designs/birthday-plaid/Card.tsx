@@ -66,7 +66,7 @@ export default function BirthdayPlaid(card: CardProps) {
             <Confetti colors={COLORS} />
             {photos.photo && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-56 w-56 rotate-2 bg-white object-cover p-2 pb-8 shadow-xl" />
+              <img src={photos.photo} alt="" className="h-56 w-56 rotate-2 object-cover drop-shadow-xl" />
             )}
             <div className="rounded-3xl bg-white/85 p-6 shadow backdrop-blur">
               <p className="whitespace-pre-line text-lg">{data.message}</p>

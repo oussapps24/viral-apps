@@ -76,7 +76,7 @@ export default function BeMyValentine(card: CardProps) {
           <motion.div key="ask" exit={{ opacity: 0 }} className="flex max-w-md flex-col items-center gap-8 text-center">
             {photos.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-48 w-48 rotate-[-3deg] rounded-2xl border-8 border-white bg-white object-cover shadow-lg" />
+              <img src={photos.photo} alt="" className="h-48 w-48 rotate-[-3deg] rounded-2xl object-cover drop-shadow-lg" />
             ) : (
               <HeartDoodle />
             )}
@@ -111,7 +111,7 @@ export default function BeMyValentine(card: CardProps) {
             <h1 className="text-3xl font-bold">Yay!! It&apos;s a date 💌</h1>
             {photos.happyPhoto && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.happyPhoto} alt="" className="h-52 w-52 rotate-2 rounded-2xl border-8 border-white bg-white object-cover shadow-lg" />
+              <img src={photos.happyPhoto} alt="" className="h-52 w-52 rotate-2 rounded-2xl object-cover drop-shadow-lg" />
             )}
             {data.message && <p className="whitespace-pre-line text-lg">{data.message}</p>}
             <Gifts card={card} theme={theme} />

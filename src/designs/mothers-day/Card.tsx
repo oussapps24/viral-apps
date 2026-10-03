@@ -30,7 +30,7 @@ export default function MothersDay(card: CardProps) {
             <Confetti colors={["#f9a8d4", "#fda4af", "#bbf7d0", "#fde68a"]} />
             {photos.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-56 w-56 rounded-full object-cover shadow-xl ring-8 ring-white" />
+              <img src={photos.photo} alt="" className="h-56 w-56 rounded-full object-cover drop-shadow-xl" />
             ) : (
               <Flower open />
             )}

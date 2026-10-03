@@ -1,6 +1,6 @@
 /**
  * Browser-side: resizes a photo to fit `maxSide` and re-encodes as JPEG, so a
- * 6 MB phone photo becomes ~250 KB. Keeps 5 photos well under Vercel's 4.5 MB
+ * 6 MB phone photo becomes ~250 KB. Images with transparency keep it (PNG out). Keeps 5 photos well under Vercel's 4.5 MB
  * body limit. Falls back to the original file if the browser can't decode it.
  */
 export async function shrinkImage(file: File, maxSide = 1400, quality = 0.82): Promise<File> {
@@ -15,16 +15,23 @@ export async function shrinkImage(file: File, maxSide = 1400, quality = 0.82): P
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#fff"; // PNG transparency → white instead of black
-    ctx.fillRect(0, 0, w, h);
     ctx.drawImage(bitmap, 0, 0, w, h);
     bitmap.close();
 
-    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", quality));
+    // Transparent PNG/WebP stays transparent (re-encoded as PNG); opaque images go to JPEG.
+    const alpha = file.type !== "image/jpeg" && hasAlpha(ctx, w, h);
+    const outType = alpha ? "image/png" : "image/jpeg";
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, outType, quality));
     if (!blob || blob.size >= file.size) return file;
-    const name = file.name.replace(/\.\w+$/, "") + ".jpg";
-    return new File([blob], name, { type: "image/jpeg" });
+    const name = file.name.replace(/\.\w+$/, "") + (alpha ? ".png" : ".jpg");
+    return new File([blob], name, { type: outType });
   } catch {
     return file;
   }
+}
+
+function hasAlpha(ctx: CanvasRenderingContext2D, w: number, h: number): boolean {
+  const { data } = ctx.getImageData(0, 0, w, h);
+  for (let i = 3; i < data.length; i += 16) if (data[i] < 255) return true;
+  return false;
 }

@@ -31,7 +31,7 @@ export default function BirthdayCandles(card: CardProps) {
             <Confetti colors={["#f59e0b", "#38bdf8", "#f472b6", "#a3e635"]} />
             {photos.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={photos.photo} alt="" className="h-56 w-56 rounded-full object-cover shadow-xl ring-8 ring-white" />
+              <img src={photos.photo} alt="" className="h-56 w-56 rounded-full object-cover drop-shadow-xl" />
             ) : (
               <Cake />
             )}

@@ -103,10 +103,10 @@ function Memories({ photos, theme }: { photos: Record<string, string>; theme: Th
             initial={{ opacity: 0, y: 20, rotate: 0 }}
             animate={{ opacity: 1, y: 0, rotate: [-4, 3, -2][i] }}
             transition={{ delay: i * 0.15 }}
-            className="bg-white p-2 pb-7 shadow-lg last:odd:col-span-2 sm:last:odd:col-span-1"
+            className="last:odd:col-span-2 sm:last:odd:col-span-1"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt="" className="aspect-square w-[38vw] max-w-52 object-cover" />
+            <img src={src} alt="" className="aspect-square w-[38vw] max-w-52 object-cover drop-shadow-lg" />
           </motion.figure>
         ))}
       </div>
