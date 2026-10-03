@@ -5,6 +5,7 @@
  */
 export async function shrinkImage(file: File, maxSide = 1400, quality = 0.82): Promise<File> {
   if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
+  if (file.type === "image/webp" && (await isAnimatedWebp(file))) return file;
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
     const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
@@ -34,4 +35,11 @@ function hasAlpha(ctx: CanvasRenderingContext2D, w: number, h: number): boolean 
   const { data } = ctx.getImageData(0, 0, w, h);
   for (let i = 3; i < data.length; i += 16) if (data[i] < 255) return true;
   return false;
+}
+
+/** Animated WebP has a VP8X header with the animation flag (bit 1 of byte 20). Re-encoding would flatten it. */
+async function isAnimatedWebp(file: File): Promise<boolean> {
+  const b = new Uint8Array(await file.slice(0, 21).arrayBuffer());
+  const tag = (o: number) => String.fromCharCode(b[o], b[o + 1], b[o + 2], b[o + 3]);
+  return b.length === 21 && tag(0) === "RIFF" && tag(8) === "WEBP" && tag(12) === "VP8X" && (b[20] & 0x02) !== 0;
 }

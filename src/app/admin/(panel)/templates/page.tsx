@@ -66,7 +66,8 @@ export default async function TemplatesPage({ searchParams }: PageProps<"/admin/
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={cover} alt="" className="h-full w-full object-cover" />
                         ) : (
-                          t.coverEmoji ?? "💌"
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={assetUrl(t.demoPhotos.photo) ?? design?.sticker} alt="" className="h-7 w-7 object-contain" />
                         )}
                       </span>
                       <div>

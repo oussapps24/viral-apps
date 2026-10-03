@@ -6,7 +6,7 @@ import { Label, Panel } from "@/components/admin/ui";
 import type { FieldDef } from "@/designs/types";
 import { saveTemplate, type FormState } from "./actions";
 
-export type DesignOption = { key: string; label: string; description: string; fields: FieldDef[] };
+export type DesignOption = { key: string; label: string; description: string; fields: FieldDef[]; photoDefaults: Record<string, string> };
 
 export type TemplateInitial = {
   id: string;
@@ -22,7 +22,6 @@ export type TemplateInitial = {
   coverUrl?: string;
   coverTitle: string | null;
   coverSubtitle: string | null;
-  coverEmoji: string | null;
   music: string;
   musicPath: string | null;
   musicUrl?: string;
@@ -109,14 +108,9 @@ export default function TemplateForm({
             <Label label="Cover title">
               <input name="coverTitle" maxLength={60} defaultValue={initial?.coverTitle ?? ""} className="field" placeholder="Defaults to the name" />
             </Label>
-            <div className="grid grid-cols-[1fr_110px] gap-4">
-              <Label label="Cover subtitle">
-                <input name="coverSubtitle" maxLength={60} defaultValue={initial?.coverSubtitle ?? ""} className="field" />
-              </Label>
-              <Label label="Emoji">
-                <input name="coverEmoji" maxLength={8} defaultValue={initial?.coverEmoji ?? ""} className="field text-center text-xl" />
-              </Label>
-            </div>
+            <Label label="Cover subtitle">
+              <input name="coverSubtitle" maxLength={60} defaultValue={initial?.coverSubtitle ?? ""} className="field" />
+            </Label>
           </div>
         </div>
       </Panel>
@@ -169,6 +163,8 @@ export default function TemplateForm({
                 folder="demo"
                 square
                 label={f.label}
+                emoji={!f.section?.startsWith("Gifts")}
+                placeholderUrl={design?.photoDefaults[f.name]}
                 initialPath={initial?.demoPhotos[f.name]?.path}
                 initialUrl={initial?.demoPhotos[f.name]?.url}
               />

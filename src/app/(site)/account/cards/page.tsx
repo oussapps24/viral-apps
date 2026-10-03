@@ -17,7 +17,7 @@ const day = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "n
 /** Draft window matches the daily cleanup job (drafts older than 7 days are deleted). */
 async function loadCards(userId: string) {
   const since = new Date(Date.now() - 7 * 86_400_000);
-  const select = { c: cards, name: templates.name, design: templates.design, coverPath: templates.coverPath, coverEmoji: templates.coverEmoji };
+  const select = { c: cards, name: templates.name, design: templates.design, coverPath: templates.coverPath, demoPhotos: templates.demoPhotos };
   const [bought, drafts] = await Promise.all([
     db().select(select).from(cards).innerJoin(templates, eq(cards.templateId, templates.id))
       .where(and(eq(cards.userId, userId), inArray(cards.status, ["paid", "refunded"])))
@@ -29,15 +29,19 @@ async function loadCards(userId: string) {
   return { bought, drafts };
 }
 
-function Thumb({ design, coverPath, emoji }: { design: string; coverPath: string | null; emoji: string | null }) {
+function Thumb({ design, coverPath, icon }: { design: string; coverPath: string | null; icon?: string }) {
   const cover = assetUrl(coverPath);
+  const art = assetUrl(icon) ?? getDesign(design)?.sticker;
   return (
     <span className={`grid h-20 w-16 shrink-0 place-items-center overflow-hidden rounded-xl text-2xl ${getDesign(design)?.cover.bg ?? "bg-petal"}`}>
       {cover ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={cover} alt="" className="h-full w-full object-cover" />
+      ) : art ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={art} alt="" className="h-10 w-10 object-contain" />
       ) : (
-        emoji ?? "💌"
+        "💌"
       )}
     </span>
   );
@@ -61,11 +65,11 @@ export default async function MyCardsPage() {
         </div>
       ) : (
         <ul className="flex flex-col gap-3">
-          {bought.map(({ c, name, design, coverPath, coverEmoji }) => {
+          {bought.map(({ c, name, design, coverPath, demoPhotos }) => {
             const live = c.status === "paid";
             return (
               <li key={c.id} className="flex flex-wrap items-center gap-4 rounded-[1.5rem] bg-white p-4 ring-1 ring-petal">
-                <Thumb design={design} coverPath={coverPath} emoji={coverEmoji} />
+                <Thumb design={design} coverPath={coverPath} icon={demoPhotos.photo} />
                 <div className="min-w-0 flex-1 basis-40">
                   <p className="font-extrabold">{name}</p>
                   <p className="text-sm text-plum-soft">
@@ -94,9 +98,9 @@ export default async function MyCardsPage() {
           <h2 className="mb-1 font-display text-xl font-black">Not unlocked yet</h2>
           <p className="mb-4 text-sm text-plum-soft">Drafts are kept for 7 days.</p>
           <ul className="flex flex-col gap-3">
-            {drafts.map(({ c, name, design, coverPath, coverEmoji }) => (
+            {drafts.map(({ c, name, design, coverPath, demoPhotos }) => (
               <li key={c.id} className="flex items-center gap-4 rounded-[1.5rem] bg-white/60 p-4 ring-1 ring-petal">
-                <Thumb design={design} coverPath={coverPath} emoji={coverEmoji} />
+                <Thumb design={design} coverPath={coverPath} icon={demoPhotos.photo} />
                 <div className="min-w-0 flex-1">
                   <p className="font-extrabold">{name}</p>
                   <p className="text-sm text-plum-soft">for {c.data.toName ?? "someone special"} · started {day(c.createdAt)}</p>

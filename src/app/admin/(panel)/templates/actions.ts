@@ -28,7 +28,6 @@ const Base = z.object({
   coverPath: z.string().trim(),
   coverTitle: z.string().trim().max(60),
   coverSubtitle: z.string().trim().max(60),
-  coverEmoji: z.string().trim().max(8),
   music: z.string().refine((m) => m === "none" || m === "upload" || TRACK_IDS.includes(m as never), "Pick music"),
   musicPath: z.string().trim(),
 });
@@ -52,7 +51,6 @@ export async function saveTemplate(id: string | null, _prev: FormState, fd: Form
     coverPath: get("coverPath"),
     coverTitle: get("coverTitle"),
     coverSubtitle: get("coverSubtitle"),
-    coverEmoji: get("coverEmoji"),
     music: get("music"),
     musicPath: get("musicPath"),
   });
@@ -100,7 +98,6 @@ export async function saveTemplate(id: string | null, _prev: FormState, fd: Form
     coverPath: nullIfEmpty(v.coverPath),
     coverTitle: nullIfEmpty(v.coverTitle),
     coverSubtitle: nullIfEmpty(v.coverSubtitle),
-    coverEmoji: nullIfEmpty(v.coverEmoji),
     music: v.music,
     musicPath: v.music === "upload" ? nullIfEmpty(v.musicPath) : null,
     demoData,

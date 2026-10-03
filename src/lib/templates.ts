@@ -20,7 +20,7 @@ export type TemplateView = {
   category: { id: string; slug: string; label: string; emoji: string };
   coverUrl?: string;
   /** `art`: animated sticker or first-screen photo drawn on the CSS cover. */
-  cover: { title: string; subtitle?: string; emoji?: string; art?: string; bg: string; ink: string; font: CoverFont };
+  cover: { title: string; subtitle?: string; art?: string; bg: string; ink: string; font: CoverFont };
   /** Photo slots filled in when the buyer leaves them empty (question sticker etc.). */
   defaultPhotos: Record<string, string>;
   music: MusicSpec;
@@ -60,7 +60,6 @@ function toView({ t, c }: Row): TemplateView {
     cover: {
       title: t.coverTitle || t.name,
       subtitle: t.coverSubtitle ?? undefined,
-      emoji: t.coverEmoji ?? undefined,
       art: demoPhotos.photo ?? design?.sticker,
       bg: design?.cover.bg ?? "bg-petal",
       ink: design?.cover.ink ?? "text-plum",

@@ -11,7 +11,7 @@ export async function formOptions() {
     .select({ id: schema.categories.id, label: schema.categories.label, emoji: schema.categories.emoji })
     .from(schema.categories)
     .orderBy(asc(schema.categories.sort), asc(schema.categories.label));
-  const designs: DesignOption[] = DESIGNS.map((d) => ({ key: d.key, label: d.label, description: d.description, fields: d.fields }));
+  const designs: DesignOption[] = DESIGNS.map((d) => ({ key: d.key, label: d.label, description: d.description, fields: d.fields, photoDefaults: d.photoDefaults ?? {} }));
   const tracks = TRACK_IDS.map((id) => ({ value: id, label: TRACK_LABELS[id] }));
   return { categories, designs, tracks };
 }
